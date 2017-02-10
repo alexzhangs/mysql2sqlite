@@ -65,6 +65,7 @@ inTrigger != 0 { print; next }
 
 # Print all fields definition lines except the `KEY` lines.
 /^  / && !/^(  KEY|\);)/ {
+	gsub(/NOT NULL AUTO_INCREMENT|not null auto_increment/, "")
 	gsub(/AUTO_INCREMENT|auto_increment/, "")
 	gsub(/(CHARACTER SET|character set) [^ ]+ /, "")
 	gsub(/DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP|default current_timestamp on update current_timestamp/, "")
@@ -72,6 +73,8 @@ inTrigger != 0 { print; next }
 	gsub(/(ENUM|enum)[^)]+\)/, "text ")
 	gsub(/(SET|set)\([^)]+\)/, "text ")
 	gsub(/UNSIGNED|unsigned/, "")
+	gsub(/" [^ ]*(INT|int)[^ ]*/, "\" integer")
+	gsub(/COMMENT '.*'/, "")
 	if (prev) print prev ","
 	prev = $1
 }
